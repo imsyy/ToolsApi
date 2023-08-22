@@ -1,7 +1,7 @@
 <div align="center">
 <img alt="logo" height="120" src="./public/favicon.png" width="120"/>
 <h2>Tools API</h2>
-<p>一些有用的 API  API 接</p>
+<p>一些有用的 API</p>
 </div>
 
 ## 总览
