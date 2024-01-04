@@ -137,7 +137,7 @@ bingRouter.get("/bing/image", async (ctx) => {
 });
 
 // 本地图片缓存目录
-const cacheDir = path.join(__dirname, "images");
+const cacheDir = path.join(process.cwd(), "images");
 if (!fs.existsSync(cacheDir)) {
   fs.mkdirSync(cacheDir);
 }
