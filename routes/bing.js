@@ -19,8 +19,26 @@ const bingRouter = new Router();
 // 调用时间
 let updateTime = new Date().toISOString();
 
+// 允许跨域的域名
+function setCorsHeaders(ctx) {
+  ctx.set("Access-Control-Allow-Origin", "*");
+  ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
+// 处理 OPTIONS 预检请求
+statusRouter.options("/bing", (ctx) => {
+  setCorsHeaders(ctx);
+  ctx.status = 200;
+});
+statusRouter.options("/bing/image", (ctx) => {
+  setCorsHeaders(ctx);
+  ctx.status = 200;
+});
+
 // 获取列表数据
 bingRouter.get("/bing", async (ctx) => {
+  setCorsHeaders(ctx);
   try {
     // 获取参数
     let hd = 0;
@@ -79,6 +97,7 @@ bingRouter.get("/bing", async (ctx) => {
 
 // 显示图片
 bingRouter.get("/bing/image", async (ctx) => {
+  setCorsHeaders(ctx);
   try {
     // 获取参数
     let hd = 0;
