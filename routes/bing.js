@@ -27,11 +27,11 @@ function setCorsHeaders(ctx) {
 }
 
 // 处理 OPTIONS 预检请求
-statusRouter.options("/bing", (ctx) => {
+bingRouter.options("/bing", (ctx) => {
   setCorsHeaders(ctx);
   ctx.status = 200;
 });
-statusRouter.options("/bing/image", (ctx) => {
+bingRouter.options("/bing/image", (ctx) => {
   setCorsHeaders(ctx);
   ctx.status = 200;
 });
