@@ -1,0 +1,70 @@
+name: Issue Helper
+
+on:
+  issues:
+    types: [opened, labeled]
+
+# 权限配置
+permissions:
+  issues: write
+
+jobs:
+  issue-handler:
+    runs-on: ubuntu-latest
+    steps:
+      # 自动欢迎
+      - name: Welcome Comment
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            👋 您好 @${{ github.actor }}，感谢提交 Issue！
+            🚀 我们已经收到您的反馈，会尽快确认你的问题
+
+            在等待回复期间，您可以：
+              - 📖 查看 [项目文档](https://neteasecloudmusicapienhanced.js.org)
+              - 💬 加入 [交流群](https://qm.qq.com/cgi-bin/qm/qr?k=2-cVSf1bE0AvAehCib00qFEFdUvPaJ_k&jump_from=webapi&authKey=1NEhib9+GsmsXVo2rCc0IbRaVHeeRXJJ0gbsyKDcIwDdAzYySOubkFCvkV32+7Cw) 进行实时讨论
+              - 🔍 搜索 [现有 Issues](https://github.com/imsyy/SPlayer/issues) 查看是否有类似问题
+      # 自动关闭
+      - name: Auto Close
+        if: github.event.action == 'labeled' && contains(fromJSON('["不会修复", "无效", "重复"]'), github.event.label.name)
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "close-issue"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            抱歉，由于该 Issue 被标记为 **${{ github.event.label.name }}**，系统将自动将其关闭
+            如果您有异议，请重新编辑并联系维护者
+      # 有问题回复
+      - name: Auto Reply
+        if: github.event.action == 'labeled' && github.event.label.name == '有问题'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            🤝 您好 @${{ github.actor }}，感谢您的反馈！我们注意到该问题被添加了 **${{ github.event.label.name }}**
+            由于缺少复现步骤，我们无法重现问题，因此无法修复
+            请确保您已经详细描述了问题的复现步骤，维护团队会尽快查看
+      # 已确认 BUG
+      - name: Auto Confirm BUG
+        if: github.event.action == 'labeled' && github.event.label.name == 'BUG'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            🤝 您好 @${{ github.actor }}，感谢您的反馈！我们已经确认该问题，并将在下一个版本中修复
+      # 已修复
+      - name: Auto Fixed
+        if: github.event.action == 'labeled' && github.event.label.name == '已修复'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            🎉 您好 @${{ github.actor }}，该问题已修复，感谢您的反馈！
+
+            若您觉得仍存在问题，请重新开启或者创建新的 Issue，我们会尽快确认并修复
