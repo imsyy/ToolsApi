@@ -62,8 +62,9 @@ jobs:
         if: github.event.action == 'labeled' && github.event.label.name == '已修复'
         uses: actions-cool/issues-helper@v3
         with:
-          actions: "create-comment"
+          actions: "create-comment, close-issue"
           token: ${{ secrets.GITHUB_TOKEN }}
+          close-reason: "completed"
           body: |
             🎉 您好 @${{ github.actor }}，该问题已修复，感谢您的反馈！
 
