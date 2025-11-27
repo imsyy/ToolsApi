@@ -19,8 +19,26 @@ const bingRouter = new Router();
 // 调用时间
 let updateTime = new Date().toISOString();
 
+// 允许跨域的域名
+function setCorsHeaders(ctx) {
+  ctx.set("Access-Control-Allow-Origin", "*");
+  ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
+// 处理 OPTIONS 预检请求
+bingRouter.options("/bing", (ctx) => {
+  setCorsHeaders(ctx);
+  ctx.status = 200;
+});
+bingRouter.options("/bing/image", (ctx) => {
+  setCorsHeaders(ctx);
+  ctx.status = 200;
+});
+
 // 获取列表数据
 bingRouter.get("/bing", async (ctx) => {
+  setCorsHeaders(ctx);
   try {
     // 获取参数
     let hd = 0;
@@ -79,6 +97,7 @@ bingRouter.get("/bing", async (ctx) => {
 
 // 显示图片
 bingRouter.get("/bing/image", async (ctx) => {
+  setCorsHeaders(ctx);
   try {
     // 获取参数
     let hd = 0;
@@ -115,7 +134,7 @@ bingRouter.get("/bing/image", async (ctx) => {
       );
       const imgUrl = `https://cn.bing.com/${response.data.images[0].url}`;
 
-      // 下载图片并将其保存到本地
+      // 下载图片并保存到缓存目录
       const imageResponse = await axios.get(imgUrl, {
         responseType: "arraybuffer",
       });
@@ -136,10 +155,13 @@ bingRouter.get("/bing/image", async (ctx) => {
   }
 });
 
-// 本地图片缓存目录
-const cacheDir = path.join(process.cwd(), "images");
+// 本地图片缓存目录（本地用 ./images，Vercel 上用 /tmp/images）
+const cacheDir = process.env.VERCEL
+  ? path.join("/tmp", "images")
+  : path.join(process.cwd(), "images");
+
 if (!fs.existsSync(cacheDir)) {
-  fs.mkdirSync(cacheDir);
+  fs.mkdirSync(cacheDir, { recursive: true });
 }
 
 // 数据处理

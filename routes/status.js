@@ -9,8 +9,22 @@ const axios = require("axios");
 // 调用路径
 const url = "https://api.uptimerobot.com/v2/getMonitors";
 
+// 允许跨域的域名
+function setCorsHeaders(ctx) {
+  ctx.set("Access-Control-Allow-Origin", "*");
+  ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
+// 处理 OPTIONS 预检请求
+statusRouter.options("/status", (ctx) => {
+  setCorsHeaders(ctx);
+  ctx.status = 200;
+});
+
 // GET
 statusRouter.get("/status", async (ctx) => {
+  setCorsHeaders(ctx);
   ctx.status = 400;
   ctx.body = {
     code: 400,
@@ -20,6 +34,7 @@ statusRouter.get("/status", async (ctx) => {
 
 // POST
 statusRouter.post("/status", async (ctx) => {
+  setCorsHeaders(ctx);
   try {
     // 在这里调用 Uptimerobot API
     const response = await axios.post(url, ctx.request.body, {
