@@ -24,7 +24,7 @@ jobs:
             🚀 我们已经收到您的反馈，会尽快确认你的问题
 
             在等待回复期间，您可以：
-              - 📖 查看 [项目文档](https://neteasecloudmusicapienhanced.js.org)
+              - 📖 查看 [项目文档](https://github.com/imsyy/SPlayer/blob/dev/README.md)
               - 💬 加入 [交流群](https://qm.qq.com/cgi-bin/qm/qr?k=2-cVSf1bE0AvAehCib00qFEFdUvPaJ_k&jump_from=webapi&authKey=1NEhib9+GsmsXVo2rCc0IbRaVHeeRXJJ0gbsyKDcIwDdAzYySOubkFCvkV32+7Cw) 进行实时讨论
               - 🔍 搜索 [现有 Issues](https://github.com/imsyy/SPlayer/issues) 查看是否有类似问题
       # 自动关闭
@@ -32,11 +32,11 @@ jobs:
         if: github.event.action == 'labeled' && contains(fromJSON('["不会修复", "无效", "重复"]'), github.event.label.name)
         uses: actions-cool/issues-helper@v3
         with:
-          actions: "close-issue"
+          actions: "create-comment, close-issue"
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             抱歉，由于该 Issue 被标记为 **${{ github.event.label.name }}**，系统将自动将其关闭
-            如果您有异议，请重新编辑并联系维护者
+            如果您认为该 Issue 仍然有效，请重新开启或者创建新的 Issue，我们会尽快确认并修复
       # 有问题回复
       - name: Auto Reply
         if: github.event.action == 'labeled' && github.event.label.name == '有问题'
